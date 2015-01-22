@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="script/tabletop.js"></script>
+  </head>
+  <body>
+    <div id="export">loading (waiting google spredsheets response) </div>
+    <script>
+
+      var url = 'https://docs.google.com/spreadsheets/d/1AuXGWbI6Iazypb0raage0qYn2s4o9QJPM0Vb-ga7vWk/pubhtml'
+        , timer
+        ;
+
+      timer = setInterval (function () {
+
+        document.getElementById ('export').innerHTML += '.';
+
+      }, 400);
+
+      Tabletop.init ({
+        key: url,
+        callback: process,
+        singleton: true
+      });
+
+      function process (data, $t) {
+
+        clearInterval (timer);
+
+        var sheets = $t.foundSheetNames
+          , data
+          , output = []
+          ;
+
+        data = $t.sheets (sheets[0]).toArray ();
+
+        for (i=0; i<data.length; i++) {
+          output.push (
+            '![](' + data[i][2] + ')<br />' + 
+            '&lt;span class=&quot;photo-credit&quot; style=&quot;text-align: left;&quot;&gt;圖片取自: ' +
+            '&lt;a href=&quot;' + data[i][4] + '&quot;&gt;' + data[i][5] + '&lt;/a&gt; by ' + 
+            '&lt;a href=&quot;' + data[i][6] + '&quot;&gt;' + data[i][7] + '&lt;/a&gt;&lt;/span&gt;');
+        }
+
+        document.getElementById ('export').innerHTML = output.join ("<br /><br /><br />");
+      }
+
+    </script>
+  </body>
+</html>
